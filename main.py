@@ -4,6 +4,12 @@ import bs4
 import requests
 
 
+def scrape(urls):
+    url_word_counts = {}
+    for url in urls:
+        yield url, get_word_counts(url)
+
+
 def get_word_counts(url):
     r = requests.get(url)
     html = r.text
@@ -43,5 +49,11 @@ def map_word(word):
 
 
 if __name__ == '__main__':
-    url = 'http://en.wikipedia.org/wiki/Parse_tree'
-    print(get_word_counts(url))
+    urls = [
+        'http://en.wikipedia.org/wiki/Parse_tree',
+        'http://en.wikipedia.org/wiki/The_Inheritance_of_Loss',
+        'http://en.wikipedia.org/wiki/Lewis_turning_point',
+    ]
+
+    for k, v in scrape(urls):
+        print(k, v)
