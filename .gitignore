@@ -1,0 +1,8 @@
+*.pyc
+
+Include
+Lib
+Scripts
+pip-selfcheck.json
+
+.idea
