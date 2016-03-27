@@ -24,10 +24,9 @@ class Corpus:
 
     def tf_idf(self, document):
         if document not in self._cached_tf_idf_vectors:
-            word_counts = document.word_counts
             self._cached_tf_idf_vectors[document] = {
-                word: count * self.inverse_document_frequency(word)
-                for word, count in word_counts.items()
+                word: freq * self.inverse_document_frequency(word)
+                for word, freq in document.word_frequencies.items()
             }
         return self._cached_tf_idf_vectors[document]
 
