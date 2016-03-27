@@ -1,3 +1,6 @@
+import math
+
+
 class Corpus:
     def __init__(self, documents=None):
         if documents:
@@ -8,7 +11,8 @@ class Corpus:
         self._cached_tf_idf_vectors = {}
 
     def add_document(self, doc):
-        self.documents.appends(doc)
+        self.documents.append(doc)
+        self._cached_tf_idf_vectors = {}
 
     def document_frequency(self, word):
         return sum([word in doc for doc in self.documents])
@@ -22,5 +26,16 @@ class Corpus:
             }
         return self._cached_tf_idf_vectors[document]
 
+    def document_similarity(self, doc_a, doc_b):
+        words = doc_a.word_set | doc_b.word_set
+        a_vec = self.tf_idf(doc_a)
+        b_vec = self.tf_idf(doc_b)
 
+        numerator, denom_a, denom_b = 0, 0, 0
+        for word in words:
+            numerator += (a_vec[word] * b_vec[word])
+            denom_a += a_vec[word] ** 2
+            denom_b += b_vec[word] ** 2
+        denominator = math.sqrt(denom_a) + math.sqrt(denom_b)
 
+        return numerator / denominator
