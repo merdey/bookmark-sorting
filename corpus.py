@@ -37,9 +37,11 @@ class Corpus:
 
         numerator, denom_a, denom_b = 0, 0, 0
         for word in words:
-            numerator += (a_vec[word] * b_vec[word])
-            denom_a += a_vec[word] ** 2
-            denom_b += b_vec[word] ** 2
+            a = a_vec.get(word, 0)
+            b = b_vec.get(word, 0)
+            numerator += (a * b)
+            denom_a += a ** 2
+            denom_b += b ** 2
         denominator = math.sqrt(denom_a) + math.sqrt(denom_b)
 
         return numerator / denominator
