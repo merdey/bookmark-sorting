@@ -14,14 +14,19 @@ class Corpus:
         self.documents.append(doc)
         self._cached_tf_idf_vectors = {}
 
-    def document_frequency(self, word):
-        return sum([word in doc for doc in self.documents])
+    def inverse_document_frequency(self, word):
+        total, containing_word = 0, 0
+        for doc in self.documents:
+            if word in doc:
+                containing_word += 1
+            total += 1
+        return math.log(total / containing_word)
 
     def tf_idf(self, document):
         if document not in self._cached_tf_idf_vectors:
             word_counts = document.word_counts
             self._cached_tf_idf_vectors[document] = {
-                word: count / self.documents_frequency(word)
+                word: count * self.inverse_document_frequency(word)
                 for word, count in word_counts.items()
             }
         return self._cached_tf_idf_vectors[document]
