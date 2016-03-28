@@ -20,16 +20,12 @@ if __name__ == '__main__':
         doc = create_document_from_url(u)
         corp.add_document(doc)
 
-    print(corp.document_similarity(corp.documents[0], corp.documents[1]))
-    print(corp.document_similarity(corp.documents[0], corp.documents[2]))
-    print(corp.document_similarity(corp.documents[1], corp.documents[2]))
-
     vec = vectorize_corpus(corp)
 
     km = KMeans(n_clusters=4)
     km.fit(vec)
-    clusters = km.labels_.tolist()
 
+    clusters = km.labels_.tolist()
     bookmarks = {'url': urls,  'cluster': clusters}
     frame = pd.DataFrame(bookmarks, index=[clusters], columns=['url', 'cluster'])
     print(frame)
