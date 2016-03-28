@@ -11,6 +11,12 @@ class Corpus:
 
         self._cached_tf_idf_vectors = {}
 
+    def word_set(self):
+        words = set()
+        for d in self.documents:
+            words = words | d.word_set
+        return words
+
     def add_document(self, doc):
         self.documents.append(doc)
         self._cached_tf_idf_vectors = {}

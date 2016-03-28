@@ -1,5 +1,9 @@
+import pandas as pd
+from sklearn.cluster import KMeans
+
 from corpus import Corpus
 from scrape import create_document_from_url
+from util import vectorize_corpus
 
 
 if __name__ == '__main__':
@@ -19,3 +23,13 @@ if __name__ == '__main__':
     print(corp.document_similarity(corp.documents[0], corp.documents[1]))
     print(corp.document_similarity(corp.documents[0], corp.documents[2]))
     print(corp.document_similarity(corp.documents[1], corp.documents[2]))
+
+    vec = vectorize_corpus(corp)
+
+    km = KMeans(n_clusters=4)
+    km.fit(vec)
+    clusters = km.labels_.tolist()
+
+    bookmarks = {'url': urls,  'cluster': clusters}
+    frame = pd.DataFrame(bookmarks, index=[clusters], columns=['url', 'cluster'])
+    print(frame)

@@ -5,8 +5,9 @@ from util import map_word
 
 class Document:
     def __init__(self, text):
+        self.text = text
         self.words = text.split()
-        self.word_set = set(self.words)
+        self.word_set = set([map_word(w) for w in self.words])
         self.num_words = len(self.words)
 
         self._cached_word_counts = None
