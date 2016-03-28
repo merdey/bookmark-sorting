@@ -19,17 +19,16 @@ class Document:
             for word in self.words:
                 w = map_word(word)
                 counts[w] += 1
-
             self._cached_word_counts = counts
         return self._cached_word_counts
 
     @property
     def word_frequencies(self):
         if not self._cached_word_frequencies:
-            self._cached_word_frequencies = {
-                word: count / self.num_words
-                for word, count in self.word_counts.items()
-            }
+            word_freqs = collections.defaultdict(int)
+            for word, count in self.word_counts.items():
+                word_freqs[word] = count / self.num_words
+            self._cached_word_frequencies = word_freqs
         return self._cached_word_frequencies
 
     def __contains__(self, item):

@@ -1,3 +1,4 @@
+import collections
 import math
 
 
@@ -24,10 +25,10 @@ class Corpus:
 
     def tf_idf(self, document):
         if document not in self._cached_tf_idf_vectors:
-            self._cached_tf_idf_vectors[document] = {
-                word: freq * self.inverse_document_frequency(word)
-                for word, freq in document.word_frequencies.items()
-            }
+            tf_idf_vector = collections.defaultdict(int)
+            for word, freq in document.word_frequencies.items():
+                tf_idf_vector[word] = freq * self.inverse_document_frequency(word)
+            self._cached_tf_idf_vectors[document] = tf_idf_vector
         return self._cached_tf_idf_vectors[document]
 
     def document_similarity(self, doc_a, doc_b):
@@ -37,8 +38,8 @@ class Corpus:
 
         numerator, denom_a, denom_b = 0, 0, 0
         for word in words:
-            a = a_vec.get(word, 0)
-            b = b_vec.get(word, 0)
+            a = a_vec[word]
+            b = b_vec[word]
             numerator += (a * b)
             denom_a += a ** 2
             denom_b += b ** 2
