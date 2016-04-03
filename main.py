@@ -1,3 +1,4 @@
+import bs4
 import pandas as pd
 from sklearn.cluster import KMeans
 
@@ -6,14 +7,32 @@ from scrape import create_document_from_url
 from util import vectorize_corpus
 
 
+def read_bookmarks_from_file(filename):
+    with open(filename, 'r') as f:
+        contents = f.read()
+
+    soup = bs4.BeautifulSoup(contents, 'html.parser')
+    bookmarks_dict = {}
+    for heading in soup.find_all('h3'):
+        bookmarks_dict[heading.text] = parse_bookmark_list(heading.next_sibling.next_sibling)
+    return bookmarks_dict
+
+
+def parse_bookmark_list(dl):
+    title_urls = []
+    for dt in dl.find_all('dt'):
+        title_urls.append({
+            'url': dt.find('a')['href'],
+            'title': dt.find('a').text
+        })
+    return title_urls
+
+
+
+
 if __name__ == '__main__':
-    urls = [
-        'https://en.wikipedia.org/wiki/Tree_(data_structure)',
-        'http://en.wikipedia.org/wiki/Parse_tree',
-        'https://en.wikipedia.org/wiki/K-means_clustering',
-        'http://en.wikipedia.org/wiki/The_Inheritance_of_Loss',
-        'http://en.wikipedia.org/wiki/Lewis_turning_point',
-    ]
+    bookmarks = read_bookmarks_from_file('test_bookmarks.html')
+    urls = [bm['url'] for bm in bookmarks['Unsorted']]
 
     corp = Corpus()
     for u in urls:
@@ -28,4 +47,4 @@ if __name__ == '__main__':
     clusters = km.labels_.tolist()
     bookmarks = {'url': urls,  'cluster': clusters}
     frame = pd.DataFrame(bookmarks, index=[clusters], columns=['url', 'cluster'])
-    print(frame)
+    print(frame.sort_values(by=['cluster']))
